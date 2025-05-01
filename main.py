@@ -67,14 +67,9 @@ async def create_folder(org_name: str = Form(...), folder_name: str = Form(...),
     return {"message": f"Folder '{folder_name}' created under organization '{org_name}' with {len(files)} images."}
 
 @app.post("/check_attendance/")
-async def check_attendance(org_name: str = Form(...), folder_name: str = Form(...), faculty_id: str = Form(...), file: UploadFile = File(...)):
+async def check_attendance(org_name: str = Form(...), folder_name: str = Form(...), file: UploadFile = File(...)):
     """Check attendance using an uploaded image, ensuring only assigned faculty can check."""
     folder_path = get_org_folder_path(org_name, folder_name)
-
-    # Validate faculty access
-    folder_key = (org_name, folder_name)
-    if faculty_id not in faculty_assignments.get(folder_key, set()):
-        return {"error": "Unauthorized access. Only assigned faculty members can check attendance."}
 
     # Load student encodings from the specified folder
     students = load_student_encodings(folder_path)
