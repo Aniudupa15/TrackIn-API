@@ -90,5 +90,3 @@ async def check_attendance(org_name: str = Form(...), folder_name: str = Form(..
     except Exception as e:
         return {"error": f"Internal server error: {str(e)}"}
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
