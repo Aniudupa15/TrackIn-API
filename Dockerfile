@@ -1,24 +1,28 @@
-FROM python:3.10-slim
+FROM python:3.9-slim
 
-# Install system dependencies for dlib
+# Install only necessary system dependencies for OpenCV and image processing
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    cmake \
-    libboost-all-dev \
-    libopenblas-dev \
-    liblapack-dev \
-    libx11-dev \
-    python3-dev \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-RUN pip install --upgrade pip setuptools wheel
-RUN pip install --use-pep517 --no-cache-dir -r requirements.txt
-
-
-# Copy app source code
-COPY . /app
+# Set working directory
 WORKDIR /app
 
-# Expose port and run the app
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "10000"]
+# Copy files
+COPY . /app
+
+# Install Python dependencies
+RUN pip install --no-cache-dir fastapi uvicorn numpy opencv-python-headless Pillow python-multipart
+
+# Create directory for uploaded files
+RUN mkdir -p /app/uploaded_images && chmod 777 /app/uploaded_images
+
+# Expose FastAPI port
+EXPOSE 7860
+
+# Run the app
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7860"]
