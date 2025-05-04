@@ -1,6 +1,0 @@
-services:
-  - type: web
-    name: trackin-api
-    env: docker
-    dockerfilePath: Dockerfile
-    plan: free
