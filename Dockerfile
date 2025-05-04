@@ -1,6 +1,6 @@
 FROM python:3.10-slim
 
-# Install system dependencies for dlib
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
@@ -11,14 +11,13 @@ RUN apt-get update && apt-get install -y \
     python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-RUN pip install --upgrade pip setuptools wheel
-RUN pip install --use-pep517 --no-cache-dir -r requirements.txt
+# Copy requirements and install Python deps
+COPY requirements.txt .
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
-
-# Copy app source code
+# Copy the entire app into the container
 COPY . /app
 WORKDIR /app
 
-# Expose port and run the app
+# Start your FastAPI app
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "10000"]
